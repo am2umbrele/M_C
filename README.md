@@ -12,7 +12,6 @@ Installation is possible using Composer
 
 ```
 git clone git@github.com:am2umbrele/M_C.git
-
 ```
 Run
 ```
