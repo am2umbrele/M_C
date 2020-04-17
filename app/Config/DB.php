@@ -9,10 +9,10 @@ class DB
     private static $instance = null;
     private $conn;
 
-    private $host = 'localhost';
-    private $user = 'root';
+    private $host = '';
+    private $user = '';
     private $pass = '';
-    private $name = 'test';
+    private $name = '';
 
     private function __construct()
     {
