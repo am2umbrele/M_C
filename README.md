@@ -36,7 +36,7 @@ CREATE TABLE `patients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
 
 CREATE TABLE `patient_metrics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -45,7 +45,7 @@ CREATE TABLE `patient_metrics` (
   `unique_id` varchar(50) NOT NULL DEFAULT left(md5(current_timestamp()),6),
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_id` (`unique_id`,`patient_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=latin1
+) ENGINE=InnoDB CHARSET=latin1
 ```
 
 ## Request body handling
