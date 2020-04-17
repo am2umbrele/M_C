@@ -8,7 +8,7 @@
 
 ## Installation
 
-Installation is possible using Composer
+Run the following command
 
 ```
 git clone git@github.com:am2umbrele/M_C.git
