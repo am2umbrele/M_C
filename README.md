@@ -29,7 +29,6 @@ private $name = '';
 Add the tables to your database
 
 ```
-
 CREATE TABLE `patients` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
