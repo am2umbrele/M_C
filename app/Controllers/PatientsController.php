@@ -29,8 +29,9 @@ class PatientsController extends BaseController
         $request = Request::all();
 
         $patient = (new Patient())
-            ->setName($request->name)
-            ->save();
+            ->setName($request->name);
+
+        $patient->doSave($patient);
     }
 
     /**
@@ -42,7 +43,7 @@ class PatientsController extends BaseController
 
         $patient = Patient::findOneBy(['id' => $id]);
         $patient->setName($request->name)
-            ->save();
+            ->doSave($patient);
     }
 
     /**

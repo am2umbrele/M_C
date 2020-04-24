@@ -15,64 +15,49 @@ class Model
     const VERB_SET = 'set';
 
     /**
-     * @param $modelClass
-     * @param $tableName
      * @param $params
      * @return mixed
      */
-    public static function findOne($modelClass, $tableName, $params)
+    public static function findOneBy($params)
     {
+        $modelClass = get_called_class();
+        $tableName = get_class_vars($modelClass)["tableName"];
+
         list($where, $paramsKeys) = self::getFindWhere($params);
 
-        $sql = "SELECT * FROM $tableName WHERE $where";
+        $sql = "SELECT * FROM $tableName WHERE $where"; // TODO limit 1
 
-        $resultArray = DB::getInstance()->getConnection()->query($sql)->fetch(PDO::FETCH_ASSOC);
+        $model = DB::getInstance()->getConnection()->query($sql)->fetchObject($modelClass);;
+        // TODO
 
-        if (!$resultArray) {
+        if (!$model) {
             echo "No results found for $modelClass";
             exit();
-        }
-
-        return self::getModel($modelClass, $resultArray);
-    }
-
-    /**
-     * @param $modelClass
-     * @param $resultArray
-     * @return mixed
-     */
-    public static function getModel($modelClass, $resultArray)
-    {
-        $model = new $modelClass;
-
-        foreach ($resultArray as $key => $value) {
-            $method = self::getClassMethod($key, self::VERB_SET);
-            if (is_callable([$model, "$method"])) {
-                $model->$method($value);
-            }
         }
 
         return $model;
     }
 
     /**
-     * @param string $tableName
      * @return array
      */
-    public static function fetchAll(string $tableName): array
+    public static function all(): array
     {
+        $tableName = self::getTableName();
+
         $sql = "SELECT * FROM $tableName";
 
         return DB::getInstance()->getConnection()->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
-     * @param string $tableName
      * @param array $params
      * @return array
      */
-    public static function where(string $tableName, array $params): array
+    public static function getWhere(array $params): array
     {
+        $tableName = self::getTableName();
+
         list($where, $paramsKeys) = self::getFindWhere($params);
 
         $sql = "SELECT * FROM $tableName WHERE $where";
@@ -80,8 +65,10 @@ class Model
         return DB::getInstance()->getConnection()->query($sql)->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public static function doSave($tableName, $model)
+    public static function doSave($model)
     {
+        $tableName = self::getTableName();
+
         $requestMethod = $_SERVER['REQUEST_METHOD'];
 
         try {
@@ -100,7 +87,7 @@ class Model
 
         if (property_exists($model, 'autoGenerateValue') &&
             self::snakeCase(end($props)->name) === $model->autoGenerateValue) {
-            array_pop($props);
+            array_pop($props); // TODO remove the searched element instead of the last element
         }
 
         $lastProp = end($props);
@@ -136,22 +123,15 @@ class Model
         DB::getInstance()->getConnection()->exec($sql);
     }
 
-    public static function doDelete($tableName, $model)
+    public static function doDelete($model)
     {
+        $tableName = self::getTableName();
+
         $searchColumn = $model->primaryKey;
-        if (property_exists($model, 'autoGenerateValue')) {
-            $searchColumn = $model->autoGenerateValue;
-        }
 
         $method = self::getClassMethod($searchColumn, self::VERB_GET);
         $modelId = call_user_func([$model, "$method"]);
         $where = $searchColumn . " = '" . $modelId . "'";
-
-        if (property_exists($model, 'relationKey')) {
-            $method = self::getClassMethod($model->relationKey, self::VERB_GET);
-            $relationMethodId = call_user_func([$model, "$method"]);
-            $where .= ' AND ' . $model->relationKey . " = '" . $relationMethodId . "'";
-        }
 
         $sql = "DELETE FROM $tableName WHERE $where";
 
@@ -207,5 +187,13 @@ class Model
         $method = self::getClassMethod($propName, self::VERB_GET);
         $fieldName = self::snakeCase($propName);
         return array($propName, $method, $fieldName);
+    }
+
+    /**
+     * @return mixed
+     */
+    private static function getTableName()
+    {
+        return get_class_vars(get_called_class())["tableName"];
     }
 }

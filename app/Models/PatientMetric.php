@@ -6,8 +6,6 @@ class PatientMetric extends Model
 {
     protected static $tableName = 'patient_metrics';
     protected $primaryKey = 'id';
-    protected $relationKey = 'patient_id';
-    protected $autoGenerateValue = 'unique_id';
 
     /**
      * @var integer
@@ -99,33 +97,5 @@ class PatientMetric extends Model
     {
         $this->uniqueId = $uniqueId;
         return $this;
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public static function findOneBy($id)
-    {
-        return Model::findOne(self::class, self::$tableName, $id);
-    }
-
-    /**
-     * @param $params
-     * @return array
-     */
-    public static function getWhere($params): array
-    {
-        return Model::where(self::$tableName, $params);
-    }
-
-    public function save()
-    {
-        Model::doSave(self::$tableName, $this);
-    }
-
-    public function delete()
-    {
-        Model::doDelete(self::$tableName, $this);
     }
 }

@@ -52,40 +52,4 @@ class Patient extends Model
         $this->name = $name;
         return $this;
     }
-
-    /**
-     * @return array
-     */
-    public static function all(): array
-    {
-        return Model::fetchAll(self::$tableName);
-    }
-
-    /**
-     * @param $id
-     * @return mixed
-     */
-    public static function findOneBy($id)
-    {
-        return Model::findOne(self::class, self::$tableName, $id);
-    }
-
-    /**
-     * @param $params
-     * @return array
-     */
-    public static function getWhere($params): array
-    {
-        return Model::where(self::$tableName, $params);
-    }
-
-    public function save()
-    {
-        Model::doSave(self::$tableName, $this);
-    }
-
-    public function delete()
-    {
-        Model::doDelete(self::$tableName, $this);
-    }
 }

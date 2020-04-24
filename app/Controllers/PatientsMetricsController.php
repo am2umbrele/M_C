@@ -37,8 +37,9 @@ class PatientsMetricsController extends BaseController
 
         $patientMetric = (new PatientMetric())
             ->setPatientId($patientId)
-            ->setName($request->name)
-            ->save();
+            ->setName($request->name);
+
+        $patientMetric->doSave($patientMetric);
     }
 
     /**
@@ -52,7 +53,7 @@ class PatientsMetricsController extends BaseController
         $patientMetric = PatientMetric::findOneBy(['patient_id' => $patientId, 'unique_id' => $uniqueId]);
         $patientMetric->setPatientId($request->patientId ?? $patientId)
             ->setName($request->name)
-            ->save();
+            ->doSave($patientMetric);
     }
 
     /**
@@ -62,6 +63,6 @@ class PatientsMetricsController extends BaseController
     public function delete($patientId, $uniqueId)
     {
         $patientMetric = PatientMetric::findOneBy(['patient_id' => $patientId, 'unique_id' => $uniqueId]);
-        $patientMetric->delete();
+        $patientMetric->delete($patientMetric);
     }
 }
